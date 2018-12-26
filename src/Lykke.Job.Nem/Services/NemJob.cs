@@ -7,6 +7,7 @@ using Common;
 using io.nem1.sdk.Infrastructure.HttpRepositories;
 using io.nem1.sdk.Model.Accounts;
 using io.nem1.sdk.Model.Transactions;
+using io.nem1.sdk.Model.Transactions.Messages;
 using Lykke.Service.BlockchainApi.Sdk;
 
 namespace Lykke.Job.Nem.Services
@@ -45,6 +46,10 @@ namespace Lykke.Job.Nem.Services
 
                     var blockNumber = (long)transfer.TransactionInfo.Height;
                     var blockTime = _nemesis.AddSeconds(transfer.TransactionInfo.TimeStamp);
+                    var memo = (transfer.Message as PlainMessage)?.GetStringPayload();
+                    var to = string.IsNullOrEmpty(memo)
+                        ? transfer.Address.Plain
+                        : transfer.Address.Plain + "$" + memo;
 
                     foreach (var mos in transfer.Mosaics)
                     {
@@ -56,7 +61,7 @@ namespace Lykke.Job.Nem.Services
                         var amount = asset.FromBaseUnit((long)mos.Amount);
 
                         actions.Add(new BlockchainAction(actionId, blockNumber, blockTime, transfer.TransactionInfo.Hash, transfer.Signer.Address.Plain, asset.AssetId, (-1) * amount));
-                        actions.Add(new BlockchainAction(actionId, blockNumber, blockTime, transfer.TransactionInfo.Hash, transfer.Address.Plain, asset.AssetId, amount));
+                        actions.Add(new BlockchainAction(actionId, blockNumber, blockTime, transfer.TransactionInfo.Hash, to, asset.AssetId, amount));
                     }
                 }
 
