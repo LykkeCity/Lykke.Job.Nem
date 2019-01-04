@@ -3,17 +3,22 @@ NemJob:
         LogsConnString:
             settings-key: Nem-LogsConnString
             types:
-              - AzureTableStorage
+                - AzureTableStorage
         DataConnString:
             settings-key: Nem-DataConnString
             types:
-              - AzureTableStorage
+                - AzureTableStorage
     HotWalletAddress:
         settings-key: Nem-HotWalletAddress
     NemUrl:
         settings-key: Nem-Url
     Period:
         settings-key: Nem-JobPeriod
+    ChaosKitty:
+        StateOfChaos:
+            settings-key: NemJobStateOfChaos
+            types:
+                - Optional
 SlackNotifications:
     AzureQueue:
         ConnectionString:

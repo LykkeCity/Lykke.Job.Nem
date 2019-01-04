@@ -37,7 +37,8 @@ namespace Lykke.Service.Nem
                     sc.AddBlockchainJob(
                         settings.ConnectionString(s => s.NemJob.Db.DataConnString),
                         settings.CurrentValue.NemJob.Period,
-                        _ => new NemJob(settings.CurrentValue.NemJob.NemUrl, settings.CurrentValue.NemJob.HotWalletAddress));
+                        _ => new NemJob(settings.CurrentValue.NemJob.NemUrl, settings.CurrentValue.NemJob.HotWalletAddress),
+                        settings.CurrentValue.NemJob.ChaosKitty);
                 };
             });
         }
