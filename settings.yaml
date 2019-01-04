@@ -16,9 +16,7 @@ NemJob:
         settings-key: Nem-JobPeriod
     ChaosKitty:
         StateOfChaos:
-            settings-key: NemJobStateOfChaos
-            types:
-                - Optional
+            settings-key: NemJob-StateOfChaos
 SlackNotifications:
     AzureQueue:
         ConnectionString:
