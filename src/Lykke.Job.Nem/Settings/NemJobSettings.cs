@@ -12,6 +12,7 @@ namespace Lykke.Service.Nem.Settings
         public string NemUrl { get; set; }
         public string HotWalletAddress { get; set; }
         public TimeSpan Period { get; set; }
+        public int RequiredConfirmations { get; set; }
 
         [Optional]
         public ChaosSettings ChaosKitty { get; set; }

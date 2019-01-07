@@ -17,23 +17,29 @@ namespace Lykke.Job.Nem.Services
         readonly Address _hotWallet;
         readonly string _nemUrl;
         readonly static DateTime _nemesis = new DateTime(2015, 03, 29, 0, 6, 25, 0).ToUniversalTime();
+        readonly int _requiredConfirmations;
 
-        public NemJob(string nemUrl, string hotWalletAddress)
+        public NemJob(string nemUrl, string hotWalletAddress, int requiredConfirmations)
         {
             _hotWallet = Address.CreateFromEncoded(hotWalletAddress);
             _nemUrl = nemUrl;
+            _requiredConfirmations = requiredConfirmations;
         }
 
         public async Task<(BlockchainAction[] actions, string state)> TraceDepositsAsync(string state, Func<string, Task<IAsset>> getAsset)
         {
+            var lastConfirmedBlockNumber = await new BlockchainHttp(_nemUrl).GetBlockchainHeight() - (ulong)_requiredConfirmations;
             var actions = new List<BlockchainAction>();
             var accountHttp = new AccountHttp(_nemUrl);
-            var txs = await accountHttp.IncomingTransactions(_hotWallet);
-            var lastTransactionHash = txs.LastOrDefault()?.TransactionInfo.Hash;
+            var txs = (await accountHttp.IncomingTransactions(_hotWallet))
+                .Where(tx => tx.TransactionInfo.Height <= lastConfirmedBlockNumber)
+                .OrderByDescending(tx => tx.TransactionInfo.Id)
+                .ToList();
+            var lastTransactionHash = txs.FirstOrDefault()?.TransactionInfo.Hash;
 
             while (txs.Any())
             {
-                foreach (var tx in txs.OrderByDescending(t => t.TransactionInfo.Id))
+                foreach (var tx in txs)
                 {
                     if (tx.TransactionInfo.Hash == state)
                         return (actions.ToArray(), lastTransactionHash);
@@ -65,7 +71,7 @@ namespace Lykke.Job.Nem.Services
                     }
                 }
 
-                txs = await accountHttp.IncomingTransactions(_hotWallet, new TransactionQueryParams(txs.First().TransactionInfo.Hash));
+                txs = await accountHttp.IncomingTransactions(_hotWallet, new TransactionQueryParams(txs.Last().TransactionInfo.Hash));
             }
 
             return (actions.ToArray(), lastTransactionHash);

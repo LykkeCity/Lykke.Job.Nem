@@ -14,6 +14,8 @@ NemJob:
         settings-key: Nem-Url
     Period:
         settings-key: Nem-JobPeriod
+    RequiredConfirmations:
+        settings-key: Nem-RequiredConfirmations
     ChaosKitty:
         StateOfChaos:
             settings-key: NemJob-StateOfChaos
