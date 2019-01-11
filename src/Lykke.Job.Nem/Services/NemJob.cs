@@ -16,7 +16,7 @@ namespace Lykke.Job.Nem.Services
     {
         readonly Address _hotWallet;
         readonly string _nemUrl;
-        readonly static DateTime _nemesis = new DateTime(2015, 03, 29, 0, 6, 25, 0).ToUniversalTime();
+        readonly static DateTime _nemesis = new DateTime(2015, 03, 29, 0, 6, 25, 0, DateTimeKind.Utc);
         readonly int _requiredConfirmations;
 
         public NemJob(string nemUrl, string hotWalletAddress, int requiredConfirmations)
