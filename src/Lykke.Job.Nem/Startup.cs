@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Lykke.Common.Log;
 using Lykke.Job.Nem.Services;
 using Lykke.Sdk;
 using Lykke.Service.BlockchainApi.Sdk;
@@ -37,7 +38,11 @@ namespace Lykke.Service.Nem
                     sc.AddBlockchainJob(
                         settings.ConnectionString(s => s.NemJob.Db.DataConnString),
                         settings.CurrentValue.NemJob.Period,
-                        _ => new NemJob(settings.CurrentValue.NemJob.NemUrl, settings.CurrentValue.NemJob.HotWalletAddress, settings.CurrentValue.NemJob.RequiredConfirmations),
+                        sp => new NemJob(
+                            settings.CurrentValue.NemJob.NemUrl,
+                            settings.CurrentValue.NemJob.HotWalletAddress,
+                            settings.CurrentValue.NemJob.RequiredConfirmations,
+                            sp.GetRequiredService<ILogFactory>()),
                         settings.CurrentValue.NemJob.ChaosKitty);
                 };
             });
