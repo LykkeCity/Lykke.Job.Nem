@@ -2,12 +2,14 @@
 using JetBrains.Annotations;
 using Lykke.Common.Log;
 using Lykke.Job.Nem.Services;
+using Lykke.Logs.Loggers.LykkeSlack;
 using Lykke.Sdk;
 using Lykke.Service.BlockchainApi.Sdk;
 using Lykke.Service.Nem.Settings;
 using Lykke.SettingsReader;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Lykke.Service.Nem
 {
@@ -31,6 +33,18 @@ namespace Lykke.Service.Nem
                 {
                     logs.AzureTableName = "NemJobLog";
                     logs.AzureTableConnectionStringResolver = settings => settings.NemJob.Db.LogsConnString;
+                    logs.Extended = logBuilder =>
+                    {
+                        logBuilder.AddAdditionalSlackChannel("BlockChainIntegration", opts =>
+                        {
+                            opts.MinLogLevel = LogLevel.Information;
+                        });
+                        logBuilder.AddAdditionalSlackChannel("BlockChainIntegrationImportantMessages", opts =>
+                        {
+                            opts.MinLogLevel = LogLevel.Warning;
+                            opts.SpamGuard.DisableGuarding();
+                        });
+                    };
                 };
                 
                 options.Extend = (sc, settings) =>

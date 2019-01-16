@@ -70,7 +70,7 @@ namespace Lykke.Job.Nem.Services
 
                     var blockNumber = (long)transfer.TransactionInfo.Height;
                     var blockTime = _nemesis.AddSeconds(transfer.TransactionInfo.TimeStamp);
-                    var memo = (transfer.Message as PlainMessage)?.GetStringPayload();
+                    var memo = (transfer.Message as PlainMessage)?.GetStringPayload().TrimAllSpacesAroundNullSafe();
                     var to = string.IsNullOrEmpty(memo)
                         ? transfer.Address.Plain
                         : transfer.Address.Plain + "$" + memo;
