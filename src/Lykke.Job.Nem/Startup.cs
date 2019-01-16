@@ -38,11 +38,14 @@ namespace Lykke.Service.Nem
                         logBuilder.AddAdditionalSlackChannel("BlockChainIntegration", opts =>
                         {
                             opts.MinLogLevel = LogLevel.Information;
+                            opts.SpamGuard.DisableGuarding();
+                            opts.IncludeHealthNotifications();
                         });
                         logBuilder.AddAdditionalSlackChannel("BlockChainIntegrationImportantMessages", opts =>
                         {
                             opts.MinLogLevel = LogLevel.Warning;
                             opts.SpamGuard.DisableGuarding();
+                            opts.IncludeHealthNotifications();
                         });
                     };
                 };
