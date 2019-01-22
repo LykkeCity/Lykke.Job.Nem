@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. Solution items", "0. Solution items", "{7664A776-FBC4-4DB1-BE35-29E9664E24B4}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+		settings.yaml = settings.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Tests", "1. Tests", "{8F9036B1-5106-4C69-B2D2-B78EE52687A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Job.Nem", "src\Lykke.Job.Nem\Lykke.Job.Nem.csproj", "{F726051A-EE56-46E3-A339-DEE2729F7020}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Service.Nem.Tests", "tests\Lykke.Service.Nem.Tests\Lykke.Service.Nem.Tests.csproj", "{C239C254-B7CF-473D-8927-BDF1700C04AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F726051A-EE56-46E3-A339-DEE2729F7020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F726051A-EE56-46E3-A339-DEE2729F7020}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F726051A-EE56-46E3-A339-DEE2729F7020}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F726051A-EE56-46E3-A339-DEE2729F7020}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C239C254-B7CF-473D-8927-BDF1700C04AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C239C254-B7CF-473D-8927-BDF1700C04AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C239C254-B7CF-473D-8927-BDF1700C04AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C239C254-B7CF-473D-8927-BDF1700C04AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C239C254-B7CF-473D-8927-BDF1700C04AA} = {8F9036B1-5106-4C69-B2D2-B78EE52687A0}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EB6C0EF4-AA6A-444D-8603-3669F73A58BC}
+	EndGlobalSection
+EndGlobal
