@@ -77,9 +77,13 @@ namespace Lykke.Job.Nem.Services
 
                     foreach (var mos in transfer.Mosaics)
                     {
-                        var asset = await getAsset($"{mos.NamespaceName}:{mos.MosaicName}");
+                        var assetId = $"{mos.NamespaceName}:{mos.MosaicName}";
+                        var asset = await getAsset(assetId);
                         if (asset == null)
+                        {
+                            _log.Info($"Unknown asset", new { assetId, mos.Amount });
                             continue;
+                        }
 
                         var actionId = $"{asset.AssetId}:{mos.Amount}".CalculateHexHash32();
                         var amount = asset.FromBaseUnit((long)mos.Amount);
