@@ -66,14 +66,14 @@ namespace Lykke.Job.Nem.Services
                     var transfer = tx as TransferTransaction ?? 
                         throw new InvalidOperationException($"Wrongly parsed transaction {tx.TransactionInfo.Hash}");
 
-                    _log.Info($"New transfer detected", tx.TransactionInfo);
-
                     var blockNumber = (long)transfer.TransactionInfo.Height;
                     var blockTime = _nemesis.AddSeconds(transfer.TransactionInfo.TimeStamp);
                     var memo = (transfer.Message as PlainMessage)?.GetStringPayload().TrimAllSpacesAroundNullSafe();
                     var to = string.IsNullOrEmpty(memo)
                         ? transfer.Address.Plain
                         : transfer.Address.Plain + "$" + memo;
+
+                    _log.Info($"New transfer detected", new { tx.TransactionInfo, from = transfer.Signer.Address.Plain, to, transfer.Mosaics });
 
                     foreach (var mos in transfer.Mosaics)
                     {
