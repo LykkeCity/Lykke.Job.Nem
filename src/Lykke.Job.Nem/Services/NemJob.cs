@@ -50,24 +50,40 @@ namespace Lykke.Job.Nem.Services
                 {
                     if (tx.TransactionInfo.Hash == state)
                     {
-                        _log.Info(processedCount > 0 
-                            ? $"Processed {processedCount} transactions" 
+                        _log.Info(processedCount > 0
+                            ? $"Processed {processedCount} transactions"
                             : $"No new data since {lastTransactionHash}");
 
                         return (actions.ToArray(), lastTransactionHash);
                     }
 
-                    if (tx.TransactionType != TransactionTypes.Types.Transfer)
+                    if ((tx.TransactionType != TransactionTypes.Types.Transfer) &&
+                        (tx.TransactionType != TransactionTypes.Types.Multisig || (tx as MultisigTransaction)?.InnerTransaction.TransactionType != TransactionTypes.Types.Transfer))
                     {
                         _log.Warning($"Not a transfer, skipped", context: tx.TransactionInfo);
                         continue;
                     }
 
-                    var transfer = tx as TransferTransaction ?? 
+                    TransferTransaction transfer = null;
+                    string hash = null;
+
+                    if (tx.TransactionType == TransactionTypes.Types.Multisig)
+                    {
+                        transfer = (tx as MultisigTransaction)?.InnerTransaction as TransferTransaction;
+                        hash = tx.TransactionInfo.InnerHash;
+                    }
+
+                    if (tx.TransactionType == TransactionTypes.Types.Transfer)
+                    {
+                        transfer = tx as TransferTransaction;
+                        hash = tx.TransactionInfo.Hash;
+                    }
+
+                    if (transfer == null || string.IsNullOrEmpty(hash))
                         throw new InvalidOperationException($"Wrongly parsed transaction {tx.TransactionInfo.Hash}");
 
-                    var blockNumber = (long)transfer.TransactionInfo.Height;
-                    var blockTime = _nemesis.AddSeconds(transfer.TransactionInfo.TimeStamp);
+                    var blockNumber = (long)tx.TransactionInfo.Height;
+                    var blockTime = _nemesis.AddSeconds(tx.TransactionInfo.TimeStamp);
                     var memo = (transfer.Message as PlainMessage)?.GetStringPayload().TrimAllSpacesAroundNullSafe();
                     var to = string.IsNullOrEmpty(memo)
                         ? transfer.Address.Plain
@@ -88,8 +104,8 @@ namespace Lykke.Job.Nem.Services
                         var actionId = $"{asset.AssetId}:{mos.Amount}".CalculateHexHash32();
                         var amount = asset.FromBaseUnit((long)mos.Amount);
 
-                        actions.Add(new BlockchainAction(actionId, blockNumber, blockTime, transfer.TransactionInfo.Hash, transfer.Signer.Address.Plain, asset.AssetId, (-1) * amount));
-                        actions.Add(new BlockchainAction(actionId, blockNumber, blockTime, transfer.TransactionInfo.Hash, to, asset.AssetId, amount));
+                        actions.Add(new BlockchainAction(actionId, blockNumber, blockTime, hash, transfer.Signer.Address.Plain, asset.AssetId, (-1) * amount));
+                        actions.Add(new BlockchainAction(actionId, blockNumber, blockTime, hash, to, asset.AssetId, amount));
                     }
 
                     processedCount++;
